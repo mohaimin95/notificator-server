@@ -1,0 +1,24 @@
+{
+  // Recommended settings
+  "eslint.alwaysShowStatus": true,
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  },
+  "eslint.validate": [
+    "javascript",
+    "typescript"
+  ],
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  // Recommended: enable format on paste and type
+  "editor.formatOnPaste": true,
+  "editor.formatOnType": true,
+  // Recommended: enable auto save
+  "files.autoSave": "onFocusChange",
+  // Recommended: show minimap
+  "editor.minimap.enabled": true,
+  // Recommended: enable breadcrumbs
+  "breadcrumbs.enabled": true
+}
