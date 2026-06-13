@@ -20,9 +20,11 @@ export const messageSchema = z4.object({
   actions: z4.array(z4.tuple([z4.string(), z4.string()])).optional(),
 });
 
+export const broadcastMessageSchema = messageSchema.extend({
+  id: z4.string().uuid(),
+  timestamp: z4.iso.datetime(),
+});
+
 export type MessageSeverity = (typeof severities)[number];
 export type MessageRequest = z4.infer<typeof messageSchema>;
-export type BroadcastMessage = MessageRequest & {
-  id: string;
-  timestamp: string;
-};
+export type BroadcastMessage = z4.infer<typeof broadcastMessageSchema>;

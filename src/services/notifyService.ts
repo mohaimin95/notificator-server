@@ -1,6 +1,7 @@
 import { randomUUID } from "node:crypto";
 import { BroadcastMessage, MessageRequest } from "@schemas";
 import { emitNotification, getConnectedClientCount } from "../socket";
+import MessageStoreService from "./messageStoreService";
 
 export default class NotifyService {
   static health() {
@@ -10,14 +11,22 @@ export default class NotifyService {
     };
   }
 
-  static notify(notifyRequest: MessageRequest): BroadcastMessage {
-    const notification = {
+  static async notify(
+    notifyRequest: MessageRequest,
+  ): Promise<BroadcastMessage & { deliveryId: string }> {
+    const notification: BroadcastMessage = {
       id: randomUUID(),
       timestamp: new Date().toISOString(),
       ...notifyRequest,
     };
 
-    emitNotification(notification);
-    return notification;
+    const storedMessage = await MessageStoreService.store(notification);
+    const deliveredMessage = {
+      ...storedMessage.message,
+      deliveryId: storedMessage.deliveryId,
+    };
+
+    emitNotification(deliveredMessage);
+    return deliveredMessage;
   }
 }

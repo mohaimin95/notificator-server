@@ -7,8 +7,8 @@ export default class NotifyController {
     res.status(200).send(message);
   }
 
-  static notify(req: Request, res: Response): void {
-    const message = NotifyService.notify(req.body);
+  static async notify(req: Request, res: Response): Promise<void> {
+    const message = await NotifyService.notify(req.body);
     res.status(202).send(message);
   }
 }
