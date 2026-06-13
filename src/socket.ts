@@ -1,9 +1,10 @@
 import { Server as HttpServer } from "http";
 import { Server as SocketServer } from "socket.io";
 import MessageStoreService from "./services/messageStoreService";
+import { isAuthKeyValid } from "./services/keyService";
+import { DEVICE_ID_HEADER, SECRET_HEADER } from "./constants";
 
 let io: SocketServer | undefined;
-const DEVICE_ID_HEADER = "deviceid";
 
 const getDeviceId = (
   value: string | string[] | undefined,
@@ -30,9 +31,18 @@ export const initSocket = (server: HttpServer): SocketServer => {
 
   io.use((socket, next) => {
     const deviceId = getDeviceId(socket.handshake.headers[DEVICE_ID_HEADER]);
+    const secret = socket.handshake.headers[SECRET_HEADER];
 
     if (!deviceId) {
       next(new Error("A stable DeviceId header is required"));
+      return;
+    }
+    if (!secret) {
+      next(new Error("A stable Secret header is required"));
+      return;
+    }
+    if (!isAuthKeyValid(secret as string)) {
+      next(new Error("Not allowed to connect to the socket server"));
       return;
     }
 
